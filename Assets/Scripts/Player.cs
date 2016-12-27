@@ -14,8 +14,8 @@ public class Player : MonoBehaviour
     private Rigidbody2D Rbd2d;
     private Animator anim;
 
-    public int ourHealth;
-    public int maxHealth; 
+    public int curHealth;
+    public int maxHealth = 5; 
 
 
     // Use this for initialization
@@ -23,6 +23,8 @@ public class Player : MonoBehaviour
     {
         Rbd2d = gameObject.GetComponent<Rigidbody2D>();
         anim = gameObject.GetComponent<Animator>();
+
+        curHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -62,5 +64,45 @@ public class Player : MonoBehaviour
             }
             
         }
+
+        if(curHealth > maxHealth)
+        {
+            curHealth = maxHealth;
+        }
+
+        if(curHealth <= 0)
+        {
+            Die();
+        }
     }
+
+    void Die()
+    {
+        //death screen
+
+        //death animation
+
+
+        Application.LoadLevel(Application.loadedLevel);
+    }
+
+    public void Damage(int dmg)
+    {
+        curHealth -= dmg;
+        gameObject.GetComponent<Animation>().Play("Player_red_flash");
+    }
+
+    public IEnumerator Knockback(float knockbackDur, float knockbackPwr, Vector3 knockbackDir)
+    {
+        float timer = 0;
+
+        while(knockbackDur > timer)
+        {
+            timer += Time.deltaTime;
+            Rbd2d.AddForce(new Vector3(knockbackDir.x * 70, -knockbackDir.y * knockbackPwr, transform.position.z));
+        }
+
+        yield return 0;
+    }
+
 }
